@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+
+  stages {
+  
+    stage('Install Dependencies') {
+            steps {
+                // Install databricks-cli and databricks-test
+                //sh 'pip install databricks-cli'
+                sh 'conda create -n nbqa-env python=3.8 -y'
+                sh 'pip install --upgrade pip'
+                sh 'pip install -U nbqa'
+                //sh 'pip install black'
+                sh 'nbqa --version'
+                sh 'black --version'
+                sh 'nbqa black ./test_notebook.ipynb --line-length=96'
+                //sh 'nbqa doctest my_notebook.ipynb'
+                //sh 'nbqa flake8 my_notebook.ipynb --extend-ignore=E203,E302,E305,E703'
+                //sh 'nbqa isort my_notebook.ipynb'
+                //sh 'nbqa mypy my_notebook.ipynb --ignore-missing-imports'
+                //sh 'nbqa pylint my_notebook.ipynb --disable=C0114'
+                //sh 'pip install databricks-test'
+                //sh 'pip install --target=/home/jenkins/workspace/test_sage1 databricks-test --upgrade'
+            }
+        }
+    
+}
+}

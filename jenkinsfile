@@ -1,44 +1,29 @@
 pipeline {
     agent any
-    
-    parameters {
-        extendedChoice(
-            name: 'Dropdown1',
-            type: 'PT_MULTI_SELECT',
-            multiSelectDelimiter: ',',
-            value: '',
-            description: 'Select multiple values from Dropdown 1:',
-            visibleItemCount: 3,
-            choices: 'Value 1\nValue 2\nValue 3'
-        )
-        
-        extendedChoice(
-            name: 'Dropdown2',
-            type: 'PT_MULTI_SELECT',
-            multiSelectDelimiter: ',',
-            value: '',
-            description: 'Select multiple values from Dropdown 2:',
-            visibleItemCount: 3,
-            choices: 'Option A\nOption B\nOption C'
-        )
+
+    environment {
+        // Define environment variables if needed
     }
-    
+
     stages {
-        stage('Get Selected Values') {
+        stage('Replace Value in JSON') {
             steps {
                 script {
-                    def selectedValuesDropdown1 = params.Dropdown1.split(',')
-                    def selectedValuesDropdown2 = params.Dropdown2.split(',')
-                    
-                    echo "Selected Values from Dropdown 1: ${selectedValuesDropdown1}"
-                    echo "Selected Values from Dropdown 2: ${selectedValuesDropdown2}"
-                    
-                    // Pass selectedValuesDropdown1 and selectedValuesDropdown2 to other stages
-                    // You can perform other actions here based on the selected values
+                    // Read the JSON file into a variable
+                    def jsonFilePath = 'C:\Users\YASGUDA\Documents\Worked_Documents\Sage\Jsonfiles\template.json'
+                    def jsonContent = readFile jsonFilePath
+
+                    // Get the value to be replaced from the parameters
+                    def oldValue = params.OLD_VALUE
+                    def newValue = params.NEW_VALUE
+
+                    // Replace the old value with the new value
+                    def updatedJsonContent = jsonContent.replace(oldValue, newValue)
+
+                    // Write the updated JSON content back to the file
+                    writeFile file: jsonFilePath, text: updatedJsonContent
                 }
             }
         }
-        
-        // Add more stages as needed
     }
 }
